@@ -1,14 +1,25 @@
 import './App.css';
-import {BrowserRouter} from "react-router-dom";
-
+import About from './containers/About';
+import Favourite from './containers/Favourites';
+import Home from './containers/Home';
+import MoviePage from './containers/MovieDetails';
+// import SearchAppBar from './components/SearchBar';
+import ResponsiveAppBar from './components/navbar';
+import { Route, Routes } from 'react-router';
 
 
 function App() {
   return (
-    <BrowserRouter>
-    <div className="App">
+    <div style = {{background: "#2d323b"}} className="App">
+      <ResponsiveAppBar />
+      {/* <SearchAppBar /> */}
+      <Routes>
+        <Route path='/' element = {<Home />} />
+        <Route path='/Favourites' element = {<Favourite />} />
+        <Route path='/About us' element = {<About />} />
+        <Route path='/moviepage/:movieid' element = {<MoviePage />} />
+      </Routes>
     </div>
-    </BrowserRouter>
   );
 }
 
