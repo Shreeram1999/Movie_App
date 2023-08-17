@@ -2,17 +2,18 @@ import { Card, CardActionArea, CardMedia, CardContent,Typography, Button, CardAc
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-const IMG_API_URL = process.env.REACT_APP_POSTER_API
+
 
 const MovieBox = ({item}) => {
+  const {id,poster_path} = item
   return (
     <Card style={ {maxWidth: 350, marginTop:15, background:"#1c1d1f", borderRadius:10 } }>
-      <Link style={{ textDecoration: 'none' }} to = {`/moviepage/${item.id}`}>
+      <Link style={{ textDecoration: 'none' }} to = {`/moviepage/${id}`}>
         <CardActionArea>
             <CardMedia
             sx={{width:300, height: 400, margin:3, borderRadius:3}}
             component="img"
-            image={IMG_API_URL + item.poster_path}
+            image={`${process.env.REACT_APP_POSTER_API}${poster_path}`}
             alt="movie poster"
             />
             <CardContent style ={{color:"white"}}>
