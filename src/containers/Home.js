@@ -1,31 +1,33 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import MovieBox from "../components/MovieBox";
-import process from "process";
-
-
-
+import { useSelector, useDispatch } from "react-redux";
+import { fetchAsyncMovies, getAllMovies } from "../features/movies/movieSlice";
 
 const Home = () => {
-    const [movies, setMovies] = useState([]);
+  const dispatch = useDispatch();
+  const movies = useSelector(getAllMovies);
 
-    const getdata = () =>{
-        fetch(`${process.env.REACT_APP_DISCOVER_API}?api_key=${process.env.REACT_APP_API_KEY}`)
-        .then((res) => res.json())
-        .then(data => {
-            console.log(data)
-            setMovies(data.results)
-        })
-    }
-
-    useEffect(() => {
-        getdata();
-    }, []);
+  useEffect(() => {
+    dispatch(fetchAsyncMovies());
+  }, [dispatch]);
 
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", marginTop:10, marginLeft:35, marginRight:5, }}>
-        {movies.map((movieReq)=> <MovieBox  key={movieReq.id} item={movieReq} />)}
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(4, 1fr)",
+        marginTop: 10,
+        marginLeft: 35,
+        marginRight: 5,
+      }}
+    >
+      {movies.map((movieReq) => (
+        <div>
+          <MovieBox key={movieReq.id} item={movieReq} />
+        </div>
+      ))}
     </div>
   );
-}
+};
 
 export default Home;
