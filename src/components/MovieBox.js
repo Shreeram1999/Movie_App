@@ -6,44 +6,56 @@ import {
   Typography,
   // Button,
   CardActions,
-} from "@mui/material";
-import React from "react";
-import { Link } from "react-router-dom";
+} from '@mui/material';
+import { Link } from 'react-router-dom';
+// import { useState } from 'react';
 
-const MovieBox = ({ item }) => {
-  const { id, poster_path } = item;
+const MovieBox = ({ id, poster_path, title, release_date }) => {
+  // const [isHovered, setIsHovered] = useState(false);
+
+  // const handleMouseEnter = () => {
+  //   setIsHovered(true);
+  // };
+
+  // const handleMouseLeave = () => {
+  //   setIsHovered(false);
+  // };
 
   return (
     <Card
       style={{
-        maxWidth: 350,
+        width: 250,
         marginTop: 15,
-        background: "#0f151f",
+        background: '#010100',
         borderRadius: 10,
-        height: 600,
+        height: 500,
+        position: 'relative',
       }}
+      // onMouseEnter={handleMouseEnter}
+      // onMouseLeave={handleMouseLeave}
     >
-      <Link style={{ textDecoration: "none" }} to={`/moviepage/${id}`}>
+      {/* {console.log(item, 'items')} */}
+      <Link style={{ textDecoration: 'none' }} to={`/moviepage/${id}`}>
         <CardActionArea>
           <CardMedia
-            sx={{ width: 300, height: 400, margin: 3, borderRadius: 3 }}
+            sx={{ width: 250, height: 350, borderRadius: 3 }}
             component="img"
             image={`${process.env.REACT_APP_POSTER_API}${poster_path}`}
             alt="movie poster"
           />
-          <CardContent style={{ color: "white" }}>
-            <Typography gutterBottom variant="h6" component="div">
-              {item.title}
+          <CardContent style={{ color: 'white' }}>
+            <Typography
+              align="center"
+              gutterBottom
+              variant="h6"
+              component="div"
+            >
+              {title}
             </Typography>
-            <Typography variant="body2">{item.release_date}</Typography>
           </CardContent>
         </CardActionArea>
       </Link>
-      <CardActions>
-        {/* <Button size="small" color="primary">
-          Share
-        </Button> */}
-      </CardActions>
+      <CardActions></CardActions>
     </Card>
   );
 };
