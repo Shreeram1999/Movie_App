@@ -1,17 +1,21 @@
 import React, { useState } from 'react';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Typography from '@mui/material/Typography';
-import { Button, Drawer, Snackbar } from '@mui/material';
+import {
+  Card,
+  CardMedia,
+  CardContent,
+  Typography,
+  //   Button,
+  // CardActions,
+  Snackbar,
+} from '@mui/material';
 import { Link } from 'react-router-dom';
+import { Drawer, Button } from '@mui/material';
+import { useSelector, useDispatch } from 'react-redux';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import ThumbUpRoundedIcon from '@mui/icons-material/ThumbUpRounded';
 import BookmarkBorderOutlined from '@mui/icons-material/BookmarkBorderOutlined';
 import BookmarkOutlined from '@mui/icons-material/BookmarkOutlined';
-import { useDispatch, useSelector } from 'react-redux';
-import no_image from '../images/no_image.jpg';
+import ThumbUpRoundedIcon from '@mui/icons-material/ThumbUpRounded';
 import {
   addToFavorites,
   addToWatchlist,
@@ -20,13 +24,15 @@ import {
   removeFromWatchlist,
   watchMovie,
 } from '../features/movies/movieSlice';
+import no_image from '../images/no_image.jpg';
 import MuiAlert from '@mui/material/Alert';
 
-const Alert = React?.forwardRef(function Alert(props, ref) {
+const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-const MovieBox = ({ movie }) => {
+function FavoriteMovieBox({ fav }) {
+  // const { id, poster_path, title, release_date } = fav;
   const [isHovered, setIsHovered] = useState(false);
   const [openFav, setOpenFav] = useState(false);
   const [openWatch, setOpenWatch] = useState(false);
@@ -34,32 +40,36 @@ const MovieBox = ({ movie }) => {
   const dispatch = useDispatch();
 
   const posterSrc =
-    movie.poster_path !== null
-      ? `${process.env.REACT_APP_POSTER_API}${movie.poster_path}`
+    fav.poster_path !== null
+      ? `${process.env.REACT_APP_POSTER_API}${fav.poster_path}`
       : no_image;
 
   const handleAddFavorite = () => {
-    dispatch(addToFavorites(movie));
-    setOpenFav(true);
+    dispatch(addToFavorites(fav));
     console.log('Item added');
   };
 
   const handleRemoveFavorite = () => {
-    dispatch(removeFromFavorites(movie));
-    setOpenFav(true);
+    dispatch(removeFromFavorites(fav));
     console.log('Item removed');
   };
 
   const handleAddWatchlist = () => {
-    dispatch(addToWatchlist(movie));
-    setOpenWatch(true);
+    dispatch(addToWatchlist(fav));
     console.log('Item added');
   };
 
   const handleRemoveWatchlist = () => {
-    dispatch(removeFromWatchlist(movie));
-    setOpenWatch(true);
+    dispatch(removeFromWatchlist(fav));
     console.log('Item removed');
+  };
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
   };
 
   const handleCloseFav = (event, reason) => {
@@ -75,26 +85,13 @@ const MovieBox = ({ movie }) => {
     setOpenWatch(false);
   };
 
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-  };
-
-  // const handleClick = () => {
-  //   console.log(movie, 'movie-id');
-  // };
-
   const favMovies = useSelector(favMovie);
   const watchMovies = useSelector(watchMovie);
-  // const [state, setState] = React.useState(false);
   const checkMovieInFavorites = favMovies?.some(
-    (favmovie) => favmovie.id === movie.id,
+    (favmovie) => favmovie.id === fav.id,
   );
   const checkMovieInWatchlist = watchMovies?.some(
-    (watchMovie) => watchMovie.id === movie.id,
+    (watchmovie) => watchmovie.id === fav.id,
   );
 
   return (
@@ -110,17 +107,17 @@ const MovieBox = ({ movie }) => {
         }}
       >
         <Drawer></Drawer>
-        <Link style={{ textDecoration: 'none' }} to={`/moviepage/${movie.id}`}>
+        <Link style={{ textDecoration: 'none' }} to={`/moviepage/${fav.id}`}>
           <CardMedia
             component="img"
             height="400"
             src={posterSrc}
-            alt={movie.title}
+            alt={fav.title}
             style={{
               filter: isHovered ? 'brightness(35%)' : 'brightness(100%)',
               margin: 10,
               borderRadius: 10,
-              width: 265,
+              width: 275,
               transform: isHovered ? 'translateY(-10px)' : 'translateY(0)',
               transition:
                 'transform 0.3s ease-in-out, opacity 0.3s ease-in-out',
@@ -131,17 +128,16 @@ const MovieBox = ({ movie }) => {
               <CardContent
                 sx={{
                   position: 'absolute',
-                  bottom: 200,
+                  bottom: 250,
                   left: 0,
                   right: 0,
+                  // backgroundColor: 'rgba(0, 0, 0, 0.7)',
                   color: 'white',
                   padding: '8px',
-                  transition:
-                    'transform 0.3s ease-in-out, opacity 0.3s ease-in-out',
                 }}
               >
                 <Typography align="center" variant="h5">
-                  {movie.title}
+                  {fav.title}
                 </Typography>
                 <Typography
                   align="center"
@@ -151,20 +147,8 @@ const MovieBox = ({ movie }) => {
                 >
                   <ThumbUpRoundedIcon
                     sx={{ marginRight: '3px', fontSize: '22px' }}
-                  />
-                  {movie.vote_average}
-                </Typography>
-                <Typography
-                  align="center"
-                  variant="h6"
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    marginTop: '10px',
-                    padding: '10px',
-                  }}
-                >
-                  {movie.genre_names?.join(', ')}
+                  />{' '}
+                  {fav.vote_average}
                 </Typography>
               </CardContent>
             </>
@@ -173,16 +157,11 @@ const MovieBox = ({ movie }) => {
         <Button
           variant="filled"
           sx={{ color: 'red' }}
-          size="small"
           onClick={
             !checkMovieInFavorites ? handleAddFavorite : handleRemoveFavorite
           }
         >
-          {!checkMovieInFavorites ? (
-            <FavoriteBorderIcon size="small" />
-          ) : (
-            <FavoriteIcon size="small" />
-          )}
+          {!checkMovieInFavorites ? <FavoriteBorderIcon /> : <FavoriteIcon />}
         </Button>
         <Snackbar
           open={openFav}
@@ -207,19 +186,17 @@ const MovieBox = ({ movie }) => {
             </Alert>
           )}
         </Snackbar>
-
         <Button
           variant="filled"
           sx={{ color: 'red' }}
-          size="small"
           onClick={
             !checkMovieInWatchlist ? handleAddWatchlist : handleRemoveWatchlist
           }
         >
           {!checkMovieInWatchlist ? (
-            <BookmarkBorderOutlined size="small" />
+            <BookmarkBorderOutlined />
           ) : (
-            <BookmarkOutlined size="small" />
+            <BookmarkOutlined />
           )}
         </Button>
         <Snackbar
@@ -248,6 +225,6 @@ const MovieBox = ({ movie }) => {
       </Card>
     </>
   );
-};
+}
 
-export default MovieBox;
+export default FavoriteMovieBox;
